@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "915373801383",
+    "project_id": "money-2f875",
+    "storage_bucket": "money-2f875.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915373801383:android:2b9d0928bafa90257e8082",
+        "android_client_info": {
+          "package_name": "com.example.moneyapin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915373801383-7sgg1aji4n7df1aj9p6gkkq90ibogj1q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC38zlf6Guv2cCkUj3PA8YCQd_G8BTOShE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "915373801383-7sgg1aji4n7df1aj9p6gkkq90ibogj1q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "915373801383-cee2dt1e3gjlh58uvna9d8sa21gtu0dn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.moneyapin"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
