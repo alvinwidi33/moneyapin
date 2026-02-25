@@ -4,6 +4,7 @@ class Users {
   final String? id;
   final String email;
   final String fullName;
+  final String? avatar;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -11,6 +12,7 @@ class Users {
     this.id,
     required this.email,
     required this.fullName,
+    this.avatar,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -23,6 +25,7 @@ class Users {
       id: doc.id,
       email: data?['email'] ?? '',
       fullName: data?['fullName'] ?? '',
+      avatar: data?['avatar'] ?? '',
       createdAt:
           (data?['createdAt'] as Timestamp).toDate(),
       updatedAt:
@@ -34,6 +37,7 @@ class Users {
     return {
       'email': email,
       'fullName': fullName, 
+      'avatar':avatar,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
     };
