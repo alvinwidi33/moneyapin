@@ -1,6 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:moneyapin/views/dashboard_page.dart';
 import 'package:moneyapin/views/login_page.dart';
 import 'package:moneyapin/views/register_page.dart';
 
@@ -15,6 +16,7 @@ class AppRoutes {
     const publicRoutes = [
       '/login',
       '/register',
+      '/dashboard'
     ];
 
     if (user == null && !publicRoutes.contains(settings.name)) {
@@ -34,10 +36,10 @@ class AppRoutes {
           builder: (_) => const RegisterPage(),
         );
 
-      // case '/home':
-      //   return MaterialPageRoute(
-      //     builder: (_) => const HomePage(),
-      //   );
+      case '/dashboard':
+        return MaterialPageRoute(
+          builder: (_) => const DashboardPage(),
+        );
 
       // case '/detail-book':
       //   return MaterialPageRoute(

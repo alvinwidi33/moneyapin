@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:moneyapin/controllers/auth_controller.dart';
 import 'package:moneyapin/routes/app_routes.dart';
 import 'package:moneyapin/theme/app_theme.dart';
 import 'firebase_options.dart';
@@ -11,7 +14,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  Get.put(AuthController());
   runApp(const MyApp());
 }
 

@@ -12,7 +12,7 @@ class AppTheme {
 
   static TextStyle headingStyle = GoogleFonts.inter(
     fontWeight: FontWeight.bold,
-    fontSize: 28,
+    fontSize: 24,
     color: secondary,
   );
 

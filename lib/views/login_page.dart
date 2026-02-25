@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
 
       await authController.loadUser();
 
-      Get.offAllNamed('/home');
+      Get.offAllNamed('/dashboard');
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
         "Login Failed",
@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                       Text("Don't have an account? ", style: AppTheme.bodyStyle),
                       GestureDetector(
                         onTap:(){
-                          Navigator.pushReplacementNamed(context, '/register');
+                          Navigator.pushReplacementNamed(context, '/dashboard');
                         },
                         child: Text("Sign Up ", style: AppTheme.bodyStyle.copyWith(color:AppTheme.primary))
                       ),
