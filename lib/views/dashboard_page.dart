@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:moneyapin/theme/app_theme.dart';
+import 'package:moneyapin/theme/navbar.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -10,6 +11,7 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  final int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width * 0.92;
@@ -125,7 +127,27 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           )
         )
-      )
+      ),
+      bottomNavigationBar: SafeArea(
+        child:NavBar(
+          currentIndex: _currentIndex, 
+          onTap: (index){
+            if (index == _currentIndex) return;
+            if (index == 0) {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            } else if (index == 1) {
+              Navigator.pushReplacementNamed(context, '/reports');
+            } else if (index == 2) {
+              Navigator.pushReplacementNamed(context, '/wallets');
+            } else if (index == 3) {
+              Navigator.pushReplacementNamed(context, '/profile');
+            }
+          },
+          onAddTap: () {
+            Navigator.pushNamed(context, '/add');
+          },
+        ) ,
+      ),
     );
   }
 }
