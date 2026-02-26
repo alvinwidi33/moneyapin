@@ -2,10 +2,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:moneyapin/views/add_page.dart';
+import 'package:moneyapin/views/change_password_page.dart';
 import 'package:moneyapin/views/dashboard_page.dart';
 import 'package:moneyapin/views/login_page.dart';
+import 'package:moneyapin/views/profile_page.dart';
 import 'package:moneyapin/views/register_page.dart';
 import 'package:moneyapin/views/reports_page.dart';
+import 'package:moneyapin/views/wallet_page.dart';
 
 class AppRoutes {
     final FirebaseAuth auth;
@@ -18,7 +21,7 @@ class AppRoutes {
     const publicRoutes = [
       '/login',
       '/register',
-      '/add'
+      '/wallets'
     ];
 
     if (user == null && !publicRoutes.contains(settings.name)) {
@@ -53,30 +56,20 @@ class AppRoutes {
           builder: (_) => const AddPage(),
         );
 
-      // case '/dashboard':
-      //   return MaterialPageRoute(
-      //     builder: (_) => AdminGuard(
-      //       auth: auth,
-      //       child: DashboardPage(),
-      //     ),
-      //   );
+      case '/wallets':
+        return MaterialPageRoute(
+          builder: (_) => const WalletPage(),
+        );
 
-      // case '/users':
-      //   return MaterialPageRoute(
-      //     builder: (_) => AdminGuard(
-      //       auth: auth,
-      //       child: UsersPage(),
-      //     ),
-      //   );
+      case '/profile':
+        return MaterialPageRoute(
+          builder: (_) => const ProfilePage(),
+        );
 
-      // case '/rents-user':
-      //   return MaterialPageRoute(
-      //     builder: (_) => AdminGuard(
-      //       auth: auth,
-      //       child: RentUsersPage(),
-      //     ),
-      //     settings: settings,
-      //   );
+      case '/change-password':
+        return MaterialPageRoute(
+          builder: (_) => const ChangePasswordPage(),
+        );
 
       default:
         return MaterialPageRoute(
