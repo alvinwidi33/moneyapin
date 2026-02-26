@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                       Text("Don't have an account? ", style: AppTheme.bodyStyle),
                       GestureDetector(
                         onTap:(){
-                          Navigator.pushReplacementNamed(context, '/reports');
+                          Navigator.pushReplacementNamed(context, '/add');
                         },
                         child: Text("Sign Up ", style: AppTheme.bodyStyle.copyWith(color:AppTheme.primary))
                       ),
