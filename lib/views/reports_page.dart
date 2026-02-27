@@ -266,7 +266,7 @@ List<Transactions> get _filtered {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Executive Summary', style: AppTheme.headingStyle),
+                              Text('Executive Summary', style: AppTheme.headingStyle.copyWith(fontSize: 20)),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
