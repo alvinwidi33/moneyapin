@@ -18,13 +18,13 @@ class AppTheme {
 
   static TextStyle bodyStyle = GoogleFonts.inter(
     fontWeight: FontWeight.normal,
-    fontSize: 16,
+    fontSize: 14.4,
     color: greyText,
   );
 
   static TextStyle labelStyle = GoogleFonts.inter(
     fontWeight: FontWeight.w600,
-    fontSize: 16,
+    fontSize: 14.4,
     color: secondary,
   );
 

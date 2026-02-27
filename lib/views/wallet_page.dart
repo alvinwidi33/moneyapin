@@ -18,9 +18,18 @@ class WalletPage extends StatefulWidget {
 class _WalletPageState extends State<WalletPage> {
   final int _currentIndex = 2;
   AuthController get authController => Get.find<AuthController>();
-  final _fmt = NumberFormat.currency(locale: 'en_US', symbol: '\$');
   final TransactionController txController = Get.find<TransactionController>();
+  String formatCurrency(double value) {
+      final hasDecimal = value % 1 != 0;
 
+      final formatter = NumberFormat.currency(
+        locale: 'en_US',
+        symbol: '\$',
+        decimalDigits: hasDecimal ? 2 : 0,
+      );
+
+      return formatter.format(value);
+    }
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width * 0.92;
@@ -47,7 +56,7 @@ class _WalletPageState extends State<WalletPage> {
                   Obx(() {
                     final balance = authController.user.value?.balance ?? 0;
                     return _BalanceCard(
-                      balance: _fmt.format(balance),
+                      balance: formatCurrency(balance),
                     );
                   }),
                   const SizedBox(height: 24),
@@ -60,7 +69,7 @@ class _WalletPageState extends State<WalletPage> {
                     iconColor: const Color(0xFF3575DC),
                     title: 'Checking Account',
                     subtitle: '**** 1234',
-                    balance: _fmt.format(5830.10),
+                    balance: formatCurrency(5830.10),
                   ),
                   const SizedBox(height: 10),
                   _AccountCard(
@@ -68,7 +77,7 @@ class _WalletPageState extends State<WalletPage> {
                     iconColor: AppTheme.primary,
                     title: 'Savings Account',
                     subtitle: '**** 5678',
-                    balance: _fmt.format(6500.40),
+                    balance: formatCurrency(6500.40),
                   ),
                   const SizedBox(height: 10),
                   _AccountCard(
@@ -76,7 +85,7 @@ class _WalletPageState extends State<WalletPage> {
                     iconColor: const Color(0xFFCC3C3F),
                     title: 'Credit Card',
                     subtitle: '**** 9012',
-                    balance: _fmt.format(150.00),
+                    balance: formatCurrency(150.00),
                   ),
                   const SizedBox(height: 24),
 
@@ -108,7 +117,7 @@ class _WalletPageState extends State<WalletPage> {
                             iconColor: tx.type == 'income' ? AppTheme.primary : Color(0xFFCC3C3F),
                             title: tx.title,
                             time: DateFormat('MMM dd, HH:mm').format(tx.date),
-                            amount: _fmt.format(tx.amount),
+                            amount: formatCurrency(tx.amount),
                             isExpense: false, 
                           ),
                         );
