@@ -26,10 +26,6 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     
     final screenWidth = MediaQuery.of(context).size.width * 0.92;
-    final formattedIncome = NumberFormat.currency(locale: 'en_US', symbol: '\$')
-        .format(50000.0);
-    final formattedExpense = NumberFormat.currency(locale: 'en_US', symbol: '\$')
-        .format(1990.0);
     final formattedSavings = NumberFormat.currency(locale: 'en_US', symbol: '\$')
         .format(5693.0);
     return Scaffold(
