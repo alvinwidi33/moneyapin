@@ -17,8 +17,17 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final int _currentIndex = 0;
-    final _fmt = NumberFormat.currency(locale: 'en_US', symbol: '\$');
+  String formatCurrency(double value) {
+    final hasDecimal = value % 1 != 0;
 
+    final formatter = NumberFormat.currency(
+      locale: 'en_US',
+      symbol: '\$',
+      decimalDigits: hasDecimal ? 2 : 0,
+    );
+
+    return formatter.format(value);
+  }
   AuthController get authController => Get.find<AuthController>();  
   final TransactionController txController = Get.find<TransactionController>();
 
@@ -26,8 +35,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     
     final screenWidth = MediaQuery.of(context).size.width * 0.92;
-    final formattedSavings = NumberFormat.currency(locale: 'en_US', symbol: '\$')
-        .format(5693.0);
+    final formattedSavings = formatCurrency(2000);
     return Scaffold(
       body:SafeArea(
         child: SingleChildScrollView(
@@ -110,7 +118,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           child: Obx(() {
                             final balance = authController.user.value?.balance ?? 0;
                             return Text(
-                              _fmt.format(balance),
+                              formatCurrency(balance),
                               style: AppTheme.headingStyle.copyWith(color:Colors.white),
                             );
                           })
@@ -137,21 +145,21 @@ class _DashboardPageState extends State<DashboardPage> {
                               Expanded(
                                 child: Summary(
                                   title: "Income",
-                                  money: "+${_fmt.format(totalIncome)}",
+                                  money: "+${formatCurrency(totalIncome)}",
                                   color: AppTheme.primary,
                                 ),
                               ),
                               Expanded(
                                 child: Summary(
                                   title: "Expenses",
-                                  money: "-${_fmt.format(totalExpense)}",
+                                  money: "-${formatCurrency(totalExpense)}",
                                   color: const Color(0xFFCC3C3F),
                                 ),
                               ),
                               Expanded(
                                 child: Summary(
                                   title: "Savings",
-                                  money: _fmt.format(totalSavings),
+                                  money: formatCurrency(totalSavings),
                                   color: const Color(0xFF3575DC),
                                 ),
                               ),
@@ -187,8 +195,8 @@ class _DashboardPageState extends State<DashboardPage> {
                             time: DateFormat('MMM dd, HH:mm').format(tx.date),
                             icon: tx.type == "expense" ? Icons.shopping_cart : Icons.account_balance,
                             money: tx.type == "expense"
-                              ? "-${_fmt.format(tx.amount)}"
-                              : "+${_fmt.format(tx.amount)}",
+                              ? "-${formatCurrency(tx.amount)}"
+                              : "+${formatCurrency(tx.amount)}",
                             color: tx.type == 'expense' ? Colors.black : AppTheme.primary,
                           ),
                         );
@@ -290,7 +298,7 @@ class Card extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          Text(money, style:AppTheme.labelStyle.copyWith(color:color))
+          Text(money, style:AppTheme.labelStyle.copyWith(color:color, fontSize: 14.4))
         ]
       )
     );

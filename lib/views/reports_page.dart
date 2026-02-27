@@ -20,10 +20,8 @@ class _ReportsPageState extends State<ReportsPage> {
 
   String _period = 'Monthly';
 
-  static final _currencyFmt =
-      NumberFormat.currency(locale: 'en_US', symbol: '\$');
 
-  String _fmt(double v) => _currencyFmt.format(v);
+  String _fmt(double v) => formatCurrency(v);
 
   DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
 
@@ -183,7 +181,17 @@ List<Transactions> get _filtered {
     final pct = ((current - previous) / previous * 100).toStringAsFixed(0);
     return '${current >= previous ? '+' : ''}$pct%';
   }
+  String formatCurrency(double value) {
+    final hasDecimal = value % 1 != 0;
 
+    final formatter = NumberFormat.currency(
+      locale: 'en_US',
+      symbol: '\$',
+      decimalDigits: hasDecimal ? 2 : 0,
+    );
+
+    return formatter.format(value);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
