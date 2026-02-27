@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Transactions {
   final String? id;
+  final String type;
   final String category;
   final String title;
   final double amount;
@@ -11,6 +12,7 @@ class Transactions {
 
   Transactions({
     this.id,
+    required this.type,
     required this.category,
     required this.title,
     required this.amount,
@@ -26,6 +28,7 @@ class Transactions {
 
     return Transactions(
       id: doc.id,
+      type: data['type'],
       category: data['category'],
       title: data['title'],
       amount: data['amount'],
@@ -53,6 +56,7 @@ class Transactions {
   }
   Map<String, dynamic> toFirestore() {
     return {
+      'type':type,
       'category':category,
       'title': title,
       'amount': amount,

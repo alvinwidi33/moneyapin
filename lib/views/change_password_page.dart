@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:moneyapin/controllers/auth_controller.dart';
 import 'package:moneyapin/theme/app_theme.dart';
 
 class ChangePasswordPage extends StatefulWidget {
@@ -10,7 +13,8 @@ class ChangePasswordPage extends StatefulWidget {
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final _formKey = GlobalKey<FormState>();
-
+  final authController = Get.find<AuthController>();
+  bool _isLoading = false;
   final _currentController = TextEditingController();
   final _newController = TextEditingController();
   final _confirmController = TextEditingController();
@@ -27,12 +31,33 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     super.dispose();
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: panggil bloc / API change password
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      await authController.changePassword(
+        currentPassword: _currentController.text.trim(),
+        newPassword: _newController.text.trim(),
+      );
+
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Password updated successfully")),
       );
+
+      Navigator.pop(context); 
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString().replaceAll("Exception: ", ""))),
+      );
+    }
+
+    if (mounted) {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -58,8 +83,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             child: Column(
               children: [
                 const SizedBox(height: 10),
-
-                /// Current Password
                 _buildPasswordField(
                   controller: _currentController,
                   hint: "Current Password",
@@ -69,8 +92,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 ),
 
                 const SizedBox(height: 16),
-
-                /// New Password
                 _buildPasswordField(
                   controller: _newController,
                   hint: "New Password",
@@ -80,8 +101,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 ),
 
                 const SizedBox(height: 16),
-
-                /// Confirm Password
                 _buildPasswordField(
                   controller: _confirmController,
                   hint: "Confirm New Password",
@@ -97,16 +116,24 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 ),
 
                 const SizedBox(height: 32),
-
-                /// Button
                 SizedBox(
+                  height: 40,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _submit,
-                    child: Text(
-                      "Update Password",
-                      style: AppTheme.buttonStyle,
-                    ),
+                    onPressed: _isLoading ? null : _submit,
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 18,
+                            width: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            "Update Password",
+                            style: AppTheme.buttonStyle,
+                          ),
                   ),
                 ),
               ],

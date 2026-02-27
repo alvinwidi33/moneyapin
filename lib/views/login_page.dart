@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
   
+  
   Future<void> _handleLogin() async {
     setState(() => _isLoading = true);
 
@@ -35,8 +36,6 @@ class _LoginPageState extends State<LoginPage> {
         emailController.text.trim(),
         passwordController.text.trim(),
       );
-
-      await authController.loadUser();
 
       Get.offAllNamed('/dashboard');
     } on FirebaseAuthException catch (e) {
@@ -70,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height:20),
                   InputUser(controller: emailController, hint: 'you@example.com', label:"Email"),
                   const SizedBox(height:20),
-                  InputUser(controller: passwordController, hint: '••••••••', label:"Password"),
+                  InputUser(controller: passwordController, hint: '••••••••', label:"Password", isPassword: true),
                   const SizedBox(height: 20),
                   Align(
                     alignment: Alignment.centerRight,
@@ -97,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                       Text("Don't have an account? ", style: AppTheme.bodyStyle),
                       GestureDetector(
                         onTap:(){
-                          Navigator.pushReplacementNamed(context, '/wallets');
+                          Navigator.pushReplacementNamed(context, '/register');
                         },
                         child: Text("Sign Up ", style: AppTheme.bodyStyle.copyWith(color:AppTheme.primary))
                       ),
@@ -119,12 +118,14 @@ class InputUser extends StatelessWidget {
     super.key,
     required this.controller,
     required this.hint,
-    required this.label
+    required this.label,
+    this.isPassword = false
   });
 
   final TextEditingController controller;
   final String hint;
   final String label;
+  final bool isPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -141,6 +142,7 @@ class InputUser extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: TextField(
               controller: controller,
+              obscureText: isPassword,
               decoration: AppTheme.inputDecoration(hint)
             )
           )

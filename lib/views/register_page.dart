@@ -41,7 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
         nameController.text.trim(),
       );
 
-      Get.offAllNamed('/home');
+      Get.offAllNamed('/dashboard');
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
         "Register Failed",
@@ -82,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height:20),
                   InputUser(controller: emailController, hint: 'you@example.com', label:"Email"),
                   const SizedBox(height:20),
-                  InputUser(controller: passwordController, hint: '••••••••', label:"Password"),
+                  InputUser(controller: passwordController, hint: '••••••••', label:"Password", isPassword: true),
                   const SizedBox(height: 20),
                   Row(
                     children: [
@@ -143,12 +143,14 @@ class InputUser extends StatelessWidget {
     super.key,
     required this.controller,
     required this.hint,
-    required this.label
+    required this.label,
+    this.isPassword = false
   });
 
   final TextEditingController controller;
   final String hint;
   final String label;
+  final bool isPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +167,7 @@ class InputUser extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: TextField(
               controller: controller,
+              obscureText: isPassword,
               decoration: AppTheme.inputDecoration(hint)
             )
           )
