@@ -550,7 +550,7 @@ class _ComparisonCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(value, style: AppTheme.headingStyle),
+              Text(value, style: AppTheme.headingStyle.copyWith(fontSize:20)),
               Row(
                 children: [
                   Icon(icon, color: color, size: 18),

@@ -88,12 +88,11 @@ class _DashboardPageState extends State<DashboardPage> {
                   const SizedBox(height:20),
                   Container(
                     width: double.infinity,
-                    height: 180,
                     decoration: BoxDecoration(
                       color: const Color(0xFF111827),
                       borderRadius: BorderRadius.circular(20)
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical:16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical:16),
                     child: Column(
                       children: [
                         Row(
@@ -116,45 +115,50 @@ class _DashboardPageState extends State<DashboardPage> {
                             );
                           })
                         ),
-                        const SizedBox(height:40),
-                            Obx(() {
-                              final transactions = txController.transactions;
+                        const SizedBox(height:24),
+                        Obx(() {
+                          final transactions = txController.transactions;
 
-                              double totalIncome = 0;
-                              double totalExpense = 0;
+                          double totalIncome = 0;
+                          double totalExpense = 0;
 
-                              for (var tx in transactions) {
-                                if (tx.type.toLowerCase() == "expense") {
-                                  totalExpense += tx.amount;
-                                } else {
-                                  totalIncome += tx.amount;
-                                }
-                              }
+                          for (var tx in transactions) {
+                            if (tx.type.toLowerCase() == "expense") {
+                              totalExpense += tx.amount;
+                            } else {
+                              totalIncome += tx.amount;
+                            }
+                          }
 
-                              final totalSavings = totalIncome - totalExpense;
+                          final totalSavings = totalIncome - totalExpense;
 
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Summary(
-                                    title: "Income",
-                                    money: "+${_fmt.format(totalIncome)}",
-                                    color: AppTheme.primary,
-                                  ),
-                                  Summary(
-                                    title: "Expenses",
-                                    money: "-${_fmt.format(totalExpense)}",
-                                    color: const Color(0xFFCC3C3F),
-                                  ),
-                                  Summary(
-                                    title: "Savings",
-                                    money: _fmt.format(totalSavings),
-                                    color: const Color(0xFF3575DC),
-                                  ),
-                                ],
-                              );
-                            }),
-                          ],
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: Summary(
+                                  title: "Income",
+                                  money: "+${_fmt.format(totalIncome)}",
+                                  color: AppTheme.primary,
+                                ),
+                              ),
+                              Expanded(
+                                child: Summary(
+                                  title: "Expenses",
+                                  money: "-${_fmt.format(totalExpense)}",
+                                  color: const Color(0xFFCC3C3F),
+                                ),
+                              ),
+                              Expanded(
+                                child: Summary(
+                                  title: "Savings",
+                                  money: _fmt.format(totalSavings),
+                                  color: const Color(0xFF3575DC),
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -309,9 +313,9 @@ class Summary extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(title, style:AppTheme.bodyStyle.copyWith(color:Colors.white)),
-        Align(
-          alignment: Alignment.center,
+        Text(title, style: AppTheme.bodyStyle.copyWith(color: Colors.white)),
+        FittedBox(
+          fit: BoxFit.scaleDown,
           child: Text(
             money,
             style: AppTheme.labelStyle.copyWith(color: color),
