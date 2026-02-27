@@ -364,7 +364,6 @@ class _ToggleTab extends StatelessWidget {
   final VoidCallback onTap;
 
   const _ToggleTab({
-    super.key,
     required this.label,
     required this.isActive,
     required this.activeColor,
