@@ -31,7 +31,7 @@ class Transactions {
       type: data['type'],
       category: data['category'],
       title: data['title'],
-      amount: data['amount'],
+      amount: (data['amount'] ?? 0).toDouble(),
       date: (data['date'] as Timestamp).toDate(),
       notes:data['notes'],
       tags:_parseTags(data['tags'])
