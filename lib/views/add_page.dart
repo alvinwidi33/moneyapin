@@ -409,7 +409,7 @@ class _ToggleTab extends StatelessWidget {
 class _SectionCard extends StatelessWidget {
   final List<Widget> children;
 
-  const _SectionCard({super.key, required this.children});
+  const _SectionCard({required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -438,7 +438,7 @@ class _SectionCard extends StatelessWidget {
 class _FieldLabel extends StatelessWidget {
   final String label;
 
-  const _FieldLabel(this.label, {super.key});
+  const _FieldLabel(this.label);
 
   @override
   Widget build(BuildContext context) {

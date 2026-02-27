@@ -9,9 +9,15 @@ class TransactionController extends GetxController {
 
   var transactions = <Transactions>[].obs;
   var isLoading = false.obs;
-@override
+  @override
   void onInit() {
     super.onInit();
+
+    final currentUser = _auth.currentUser;
+
+    if (currentUser != null) {
+      fetchTransactions(currentUser.uid);
+    }
 
     _auth.authStateChanges().listen((user) {
       if (user != null) {
