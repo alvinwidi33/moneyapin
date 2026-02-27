@@ -9,18 +9,18 @@ class AuthController extends GetxController {
       FirebaseFirestore.instance;
 
   var user = Rxn<Users>();
-@override
-void onInit() {
-  super.onInit();
+  @override
+  void onInit() {
+    super.onInit();
 
-  _auth.authStateChanges().listen((firebaseUser) {
-    if (firebaseUser != null) {
-      loadUser(firebaseUser.uid);
-    } else {
-      user.value = null;
-    }
-  });
-}
+    _auth.authStateChanges().listen((firebaseUser) {
+      if (firebaseUser != null) {
+        loadUser(firebaseUser.uid);
+      } else {
+        user.value = null;
+      }
+    });
+  }
   Future<void> register(
       String email, String password, String fullName) async {
     final credential =
