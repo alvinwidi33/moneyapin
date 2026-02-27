@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:moneyapin/controllers/auth_controller.dart';
+import 'package:moneyapin/controllers/transaction_controller.dart';
 import 'package:moneyapin/theme/app_theme.dart';
 import 'package:moneyapin/theme/navbar.dart';
 
@@ -12,12 +17,15 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final int _currentIndex = 0;
+    final _fmt = NumberFormat.currency(locale: 'en_US', symbol: '\$');
+
+  AuthController get authController => Get.find<AuthController>();  
+  final TransactionController txController = Get.find<TransactionController>();
+
   @override
   Widget build(BuildContext context) {
+    
     final screenWidth = MediaQuery.of(context).size.width * 0.92;
-    double balance = 12840.5;
-    final formattedBalance = NumberFormat.currency(locale: 'en_US', symbol: '\$')
-        .format(balance);
     final formattedIncome = NumberFormat.currency(locale: 'en_US', symbol: '\$')
         .format(50000.0);
     final formattedExpense = NumberFormat.currency(locale: 'en_US', symbol: '\$')
@@ -38,16 +46,36 @@ class _DashboardPageState extends State<DashboardPage> {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundColor: AppTheme.primary,
-                          ),
+                          Obx(() {
+                            final fullName = authController.user.value?.fullName ?? '';
+                            final firstLetter =
+                                fullName.isNotEmpty ? fullName[0].toUpperCase() : '?';
+
+                            return CircleAvatar(
+                              radius: 30,
+                              backgroundColor: AppTheme.primary,
+                              child: Text(
+                                firstLetter,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            );
+                          }),
                           const SizedBox(width: 8),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("Welcome back", style:AppTheme.bodyStyle),
-                              Text("Alex M", style: AppTheme.headingStyle)
+                              Obx(() {
+                                final fullName = authController.user.value?.fullName ?? 'User';
+                                return Text(
+                                  fullName,
+                                  style: AppTheme.headingStyle,
+                                );
+                              }),
                             ],
                           ),
                         ],
@@ -69,10 +97,9 @@ class _DashboardPageState extends State<DashboardPage> {
                       color: const Color(0xFF111827),
                       borderRadius: BorderRadius.circular(20)
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical:16),
                     child: Column(
                       children: [
-                        const SizedBox(height: 12),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -85,21 +112,53 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: Text(
-                            formattedBalance,
-                            style: AppTheme.headingStyle.copyWith(color: Colors.white),
-                          ),
+                          child: Obx(() {
+                            final balance = authController.user.value?.balance ?? 0;
+                            return Text(
+                              _fmt.format(balance),
+                              style: AppTheme.headingStyle.copyWith(color:Colors.white),
+                            );
+                          })
                         ),
                         const SizedBox(height:40),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Summary(title: "Income", money: "+$formattedIncome", color:AppTheme.primary),
-                            Summary(title: "Expenses", money: "-$formattedExpense", color:Color(0xFFCC3C3F)),
-                            Summary(title: "Savings", money: "+$formattedSavings", color:Color(0xFF3575DC)),
+                            Obx(() {
+                              final transactions = txController.transactions;
+
+                              double totalIncome = 0;
+                              double totalExpense = 0;
+
+                              for (var tx in transactions) {
+                                if (tx.type.toLowerCase() == "expense") {
+                                  totalExpense += tx.amount;
+                                } else {
+                                  totalIncome += tx.amount;
+                                }
+                              }
+
+                              final totalSavings = totalIncome - totalExpense;
+
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Summary(
+                                    title: "Income",
+                                    money: "+${_fmt.format(totalIncome)}",
+                                    color: AppTheme.primary,
+                                  ),
+                                  Summary(
+                                    title: "Expenses",
+                                    money: "-${_fmt.format(totalExpense)}",
+                                    color: const Color(0xFFCC3C3F),
+                                  ),
+                                  Summary(
+                                    title: "Savings",
+                                    money: _fmt.format(totalSavings),
+                                    color: const Color(0xFF3575DC),
+                                  ),
+                                ],
+                              );
+                            }),
                           ],
-                        )
-                      ],
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -111,7 +170,31 @@ class _DashboardPageState extends State<DashboardPage> {
                     ],
                   ),
                   const SizedBox(height:12),
-                  Card(title:"Groceries",time:"Yesterday 09:00", icon: Icons.shopping_cart, money: formattedSavings, color:Color(0xFFCC3C3F)),
+                  Obx(() {
+                    final recentExpenses = txController.transactions                        .take(3)
+                        .toList();
+
+                    if (recentExpenses.isEmpty) {
+                      return const Text("No recent expenses");
+                    }
+
+                    return Column(
+                      children: recentExpenses.map((tx) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Card(
+                            title: tx.title,
+                            time: DateFormat('MMM dd, HH:mm').format(tx.date),
+                            icon: tx.type == "expense" ? Icons.shopping_cart : Icons.account_balance,
+                            money: tx.type == "expense"
+                              ? "-${_fmt.format(tx.amount)}"
+                              : "+${_fmt.format(tx.amount)}",
+                            color: tx.type == 'expense' ? Colors.black : AppTheme.primary,
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  }),
                   const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -207,7 +290,7 @@ class Card extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          Text(money, style:AppTheme.labelStyle,)
+          Text(money, style:AppTheme.labelStyle.copyWith(color:color))
         ]
       )
     );

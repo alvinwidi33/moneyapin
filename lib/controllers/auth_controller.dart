@@ -9,7 +9,18 @@ class AuthController extends GetxController {
       FirebaseFirestore.instance;
 
   var user = Rxn<Users>();
+@override
+void onInit() {
+  super.onInit();
 
+  _auth.authStateChanges().listen((firebaseUser) {
+    if (firebaseUser != null) {
+      loadUser(firebaseUser.uid);
+    } else {
+      user.value = null;
+    }
+  });
+}
   Future<void> register(
       String email, String password, String fullName) async {
     final credential =
@@ -24,6 +35,7 @@ class AuthController extends GetxController {
         .set({
       'email': email,
       'fullName': fullName,
+      'balance':0.0,
       'createdAt': Timestamp.now(),
       'updatedAt': Timestamp.now(),
     });
@@ -36,21 +48,46 @@ class AuthController extends GetxController {
     );
   }
 
-  Future<void> loadUser() async {
-    final currentUser = _auth.currentUser;
-    if (currentUser == null) return;
+  void loadUser(String uid) {
 
-    final doc = await _firestore
+    _firestore
         .collection('users')
-        .doc(currentUser.uid)
-        .get();
+        .doc(uid)
+        .snapshots()
+        .listen((doc) {
+      if (doc.exists) {
+        user.value = Users.fromFirestore(doc);
+      }
+    });
+  }
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final currentUser = _auth.currentUser;
 
-    if (doc.exists) {
-      user.value = Users.fromFirestore(doc);
+    if (currentUser == null) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      final cred = EmailAuthProvider.credential(
+        email: currentUser.email!,
+        password: currentPassword,
+      );
+
+      await currentUser.reauthenticateWithCredential(cred);
+
+      await currentUser.updatePassword(newPassword);
+
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message ?? "Failed to change password");
     }
   }
-
   Future<void> logout() async {
     await _auth.signOut();
+    user.value = null;
+
+    Get.offAllNamed('/login');
   }
 }

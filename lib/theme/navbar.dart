@@ -15,12 +15,10 @@ class NavBar extends StatelessWidget {
 @override
 Widget build(BuildContext context) {
   return SizedBox(
-    height: 90, // lebih tinggi supaya ada ruang
+    height: 90, 
     child: Stack(
       clipBehavior: Clip.none,
       children: [
-
-        // NAVBAR PUTIH
         Positioned(
           bottom: 0,
           left: 0,
@@ -57,7 +55,7 @@ Widget build(BuildContext context) {
                   onTap: () => onTap(1),
                 ),
 
-                const SizedBox(width: 60), // ruang tombol tengah
+                const SizedBox(width: 60), 
 
                 _NavItem(
                   icon: Icons.account_balance_wallet_rounded,

@@ -4,6 +4,7 @@ class Users {
   final String? id;
   final String email;
   final String fullName;
+  final double balance;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -11,6 +12,7 @@ class Users {
     this.id,
     required this.email,
     required this.fullName,
+    required this.balance,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -23,6 +25,7 @@ class Users {
       id: doc.id,
       email: data?['email'] ?? '',
       fullName: data?['fullName'] ?? '',
+      balance: (data?['balance'] ?? 0).toDouble(),
       createdAt:
           (data?['createdAt'] as Timestamp).toDate(),
       updatedAt:
@@ -34,6 +37,7 @@ class Users {
     return {
       'email': email,
       'fullName': fullName, 
+      'balance': balance,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
     };

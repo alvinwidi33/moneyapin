@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:moneyapin/controllers/auth_controller.dart';
+import 'package:moneyapin/controllers/transaction_controller.dart';
 import 'package:moneyapin/theme/app_theme.dart';
 import 'package:moneyapin/theme/navbar.dart';
 
@@ -12,8 +17,9 @@ class WalletPage extends StatefulWidget {
 
 class _WalletPageState extends State<WalletPage> {
   final int _currentIndex = 2;
-
+  AuthController get authController => Get.find<AuthController>();
   final _fmt = NumberFormat.currency(locale: 'en_US', symbol: '\$');
+  final TransactionController txController = Get.find<TransactionController>();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +44,12 @@ class _WalletPageState extends State<WalletPage> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  _BalanceCard(balance: _fmt.format(12480.50)),
+                  Obx(() {
+                    final balance = authController.user.value?.balance ?? 0;
+                    return _BalanceCard(
+                      balance: _fmt.format(balance),
+                    );
+                  }),
                   const SizedBox(height: 24),
 
                   Text('My Accounts', style: AppTheme.headingStyle),
@@ -80,24 +91,30 @@ class _WalletPageState extends State<WalletPage> {
                     ],
                   ),
                   const SizedBox(height: 12),
+                  Obx(() {
+                    final recentTransactions =
+                        txController.transactions.take(3).toList();
 
-                  _TransactionCard(
-                    icon: Icons.shopping_cart,
-                    iconColor: const Color(0xFFCC3C3F),
-                    title: 'Groceries',
-                    time: 'Today, 10:45 AM',
-                    amount: '-\$75.50',
-                    isExpense: true,
-                  ),
-                  const SizedBox(height: 10),
-                  _TransactionCard(
-                    icon: Icons.attach_money,
-                    iconColor: AppTheme.primary,
-                    title: 'Salary',
-                    time: 'Yesterday, 9:00 AM',
-                    amount: '+\$2,500.00',
-                    isExpense: false,
-                  ),
+                    if (recentTransactions.isEmpty) {
+                      return const Text("No recent transactions");
+                    }
+
+                    return Column(
+                      children: recentTransactions.map((tx) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _TransactionCard(
+                            icon: Icons.receipt_long,
+                            iconColor: tx.type == 'income' ? AppTheme.primary : Color(0xFFCC3C3F),
+                            title: tx.title,
+                            time: DateFormat('MMM dd, HH:mm').format(tx.date),
+                            amount: _fmt.format(tx.amount),
+                            isExpense: false, 
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  }),
                   const SizedBox(height: 24),
                 ],
               ),
@@ -303,10 +320,9 @@ class _TransactionCard extends StatelessWidget {
           ),
           Text(
             amount,
-            style: AppTheme.labelStyle.copyWith(
-              color: isExpense ? const Color(0xFFCC3C3F) : AppTheme.primary,
-            ),
+            style: AppTheme.labelStyle
           ),
+          
         ],
       ),
     );

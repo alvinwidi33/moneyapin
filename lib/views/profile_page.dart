@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:moneyapin/controllers/auth_controller.dart';
 import 'package:moneyapin/theme/app_theme.dart';
 import 'package:moneyapin/theme/navbar.dart';
 
@@ -11,6 +15,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final int _currentIndex = 3;
+  AuthController get authController => Get.find<AuthController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,14 +36,35 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: AppTheme.primary,
-                  ),
-                  const SizedBox(height: 4),
-                  Text("Alex M.", style: AppTheme.headingStyle),
-                  const SizedBox(height: 4),
-                  Text("alex.m@example.com", style: AppTheme.bodyStyle),
+                  Obx(() {
+                    final user = authController.user.value;
+
+                    final fullName = user?.fullName ?? "User";
+                    final email = user?.email ?? "";
+                    final firstLetter =
+                        fullName.isNotEmpty ? fullName[0].toUpperCase() : "?";
+
+                    return Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundColor: AppTheme.primary,
+                          child: Text(
+                            firstLetter,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(fullName, style: AppTheme.headingStyle),
+                        const SizedBox(height: 4),
+                        Text(email, style: AppTheme.bodyStyle),
+                      ],
+                    );
+                  }),
                   const SizedBox(height:12),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -137,7 +164,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextButton.icon(
-                      onPressed: () {
+                      onPressed: () async {
+                        await authController.logout();
                       },
                       icon: const Icon(
                         Icons.logout,

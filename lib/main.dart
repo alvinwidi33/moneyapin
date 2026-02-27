@@ -3,7 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:moneyapin/controllers/auth_controller.dart';
+import 'package:moneyapin/controllers/transaction_controller.dart';
 import 'package:moneyapin/routes/app_routes.dart';
 import 'package:moneyapin/theme/app_theme.dart';
 import 'firebase_options.dart';
@@ -15,6 +17,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   Get.put(AuthController());
+  Get.put(TransactionController());
   runApp(const MyApp());
 }
 
@@ -25,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance;
 
-    return MaterialApp(
+    return GetMaterialApp(
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       initialRoute: '/login',
